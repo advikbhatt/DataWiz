@@ -22,13 +22,11 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Dark theme base */
     .main {
         background-color: #0e1117;
         color: #f0f2f6;
     }
     
-    /* Headings */
     h1, h2, h3 {
         font-family: 'Inter', -apple-system, sans-serif;
         font-weight: 600;
@@ -46,7 +44,6 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     
-    /* Cards */
     .card {
         background-color: #1a1c24;
         border-radius: 10px;
@@ -56,7 +53,6 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
-    /* Metric panels */
     .metric-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -84,7 +80,6 @@ st.markdown("""
         color: #a0aec0;
     }
     
-    /* Button styling */
     div.stButton > button {
         background-color: #1a1c24;
         color: white;
@@ -98,7 +93,6 @@ st.markdown("""
         background-color: #1a1c24;
     }
     
-    /* Tabs styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 2px;
         background-color: #1a1c24;
@@ -118,7 +112,6 @@ st.markdown("""
         color: #f0f2f6;
     }
     
-    /* File uploader custom design */
     .upload-container {
         border: 2px dashed #343b4d;
         border-radius: 10px;
@@ -133,18 +126,15 @@ st.markdown("""
         background-color: #252a37;
     }
     
-    /* Progress bars */
     .stProgress > div > div {
         background-color: #4a56a6;
     }
     
-    /* Data display */
     .dataframe {
         border-radius: 8px;
         overflow: hidden;
     }
     
-    /* Connection panel */
     .connection-panel {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -165,7 +155,6 @@ st.markdown("""
         transform: translateY(-2px);
     }
     
-    /* Info box */
     .info-box {
         background-color: rgba(74, 86, 166, 0.1);
         border-left: 4px solid #4a56a6;
@@ -174,7 +163,6 @@ st.markdown("""
         border-radius: 4px;
     }
     
-    /* Controls bar */
     .controls-bar {
         display: flex;
         gap: 0.5rem;
@@ -183,7 +171,6 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     
-    /* Header */
     .header {
         display: flex;
         justify-content: space-between;
@@ -191,7 +178,6 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
     
-    /* Main content container */
     .main-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -229,7 +215,6 @@ if 'file_type' not in st.session_state:
     st.session_state.file_type = None
 if 'active_tab' not in st.session_state:
     st.session_state.active_tab = 'upload'
-# Header container using local image
 with st.container():
 
         st.markdown("""
@@ -244,16 +229,13 @@ with st.container():
 
 if st.session_state.data is None:        
     with st.container():
-        
         st.markdown("### Upload Data File")
         uploaded_file = st.file_uploader(
             "Choose a file",
             type=["csv", "json","xls","xlsx"],
             help="Supported file formats: CSV / XLS / XLSX / JSON"
         )
-    
     st.markdown('</div>', unsafe_allow_html=True)
-    
     if uploaded_file is not None:
         with st.spinner("Processing file..."):
             data, file_name, file_type = parse_uploaded_file(uploaded_file)
@@ -339,38 +321,6 @@ else:
             </div>
             """, unsafe_allow_html=True)
 
-
-        st.title("📊 How to Use DataWiz")
-
-        st.markdown("""
-        ### Step 1: 🗂️ Explore the Data
-        - Begin by navigating to the **Overview** section to understand basic statistics, data shape, and data types.
-        - Review sample rows to familiarize yourself with the structure and content.
-        
-        ### Step 2: ⚠️ Error Handling
-        - Navigate to the **Error Handling** section first to identify and rectify discrepancies.
-        - Handle missing values, duplicate rows, and inconsistent data to ensure accuracy.
-        
-        ### Step 3: 📈 Visualization
-        - Move to the **Visualization** section to perform detailed analyses.
-        - Select appropriate graphs based on your data type combinations:
-            - **Numeric vs Numeric**: Scatter or Line plots.
-            - **Numeric vs Categorical**: Box, Violin, or Bar plots.
-            - **Categorical vs Categorical**: Heatmap or Stacked Bar charts.
-        
-        ### Step 4: 🔍 Relationship Analysis
-        - Use the **Relationship Analysis** tab to explore correlations and deeper insights between columns.
-        
-        ### Step 5: 💾 Export Insights
-        - Finally, export visualizations and cleaned data for reporting or further analysis.
-        """)
-        
-        st.write("## Welcome to DataWiz")
-        st.markdown("""
-        Follow the steps above to effectively use DataWiz, understand your data clearly, and derive meaningful insights.
-        """)
-        st.markdown('</div>', unsafe_allow_html=True)
-
     with tabs[1]:                
         search_term = st.text_input("🔍 Search in data", "")
         
@@ -390,9 +340,7 @@ else:
         st.subheader("Column Analysis")
         
         selected_column = st.selectbox("Select a column to analyze", data.columns)
-        
         col_stats = generate_column_stats(data, selected_column)
-        
         col1, col2 = st.columns([2, 1])
         
         with col1:
@@ -445,20 +393,15 @@ else:
                     color_discrete_sequence=['#4a56a6'],
                     labels={'column': 'Column', 'missing_percent': 'Missing (%)'}
                 )
-
                 fig.update_layout(
                     plot_bgcolor='rgba(0,0,0,0)',
                     paper_bgcolor='rgba(0,0,0,0)',
                     font=dict(color='#f0f2f6'),
                     margin=dict(l=40, r=40, t=50, b=40),
                 )
-
                 st.plotly_chart(fig, use_container_width=True)
-
                 st.subheader("Handle Missing Values")
-
                 col1, col2 = st.columns(2)
-
                 with col1:
                     missing_col = st.selectbox("Select column with missing values", missing_df['column'])
 
@@ -509,14 +452,6 @@ else:
                             preview_data[missing_col] = preview_data[missing_col].fillna(custom_value)
                             st.markdown(f"**Result:** Missing values would be filled with '{custom_value}'")
 
-                    before_after = pd.DataFrame({
-                        'Before': data[missing_col].head(10),
-                        'After': preview_data[missing_col].head(10)
-                    })
-
-                    st.markdown("**Before/After Preview (first 10 rows):**")
-                    st.dataframe(before_after, use_container_width=True)
-
                     if st.button("Apply Changes"):
                         st.session_state.data = preview_data
                         st.success(f"Missing values handled for column: {missing_col}")
@@ -525,20 +460,15 @@ else:
                 st.info("No missing values found in this dataset.")
         
         with tab2:
-            # Check for Duplicates
-            duplicate_rows = data[data.duplicated(keep=False)]  # Shows all duplicates (keep=False keeps all)
+            duplicate_rows = data[data.duplicated(keep=False)] 
             total_duplicates = data.duplicated().sum()
 
             if total_duplicates > 0:
                 st.subheader("Duplicate Values in Dataset")
 
-                # Show Duplicate Statistics
                 st.write(f"Total Duplicate Rows: **{total_duplicates}**")
-
-                # Display Duplicate Data
                 st.dataframe(duplicate_rows, use_container_width=True)
 
-                # Visualization
                 duplicate_summary = data.duplicated(subset=data.columns, keep=False).value_counts().reset_index()
                 duplicate_summary.columns = ['Is Duplicate', 'Count']
 
@@ -560,8 +490,6 @@ else:
                 )
 
                 st.plotly_chart(fig, use_container_width=True)
-
-                # User Options for Handling Duplicates
                 st.subheader("Handle Duplicate Values")
 
                 handling_method = st.selectbox(
@@ -584,8 +512,6 @@ else:
                         preview_data = preview_data.drop_duplicates(keep="last")
                         st.markdown(f"**Result:** {total_duplicates} rows would be modified, keeping the last occurrence.")
 
-                 
-
                     if st.button("Apply Change"):
                         st.session_state.data = preview_data
                         st.success("Duplicate values have been handled successfully!")
@@ -593,16 +519,12 @@ else:
             else:
                 st.info("No duplicate values found in this dataset.")
 
-        with tab3:
-
-            
-            
+        with tab3:            
             data = st.session_state.get("data", None)
             if data is None:
                 st.warning("No dataset found. Please upload a dataset.")
                 st.stop()
             
-            # Detect numerical columns
             num_columns = data.select_dtypes(include=["number"]).columns.tolist()
             if not num_columns:
                 st.warning("No numerical columns found for outlier detection.")
@@ -614,15 +536,12 @@ else:
             if not outliers.empty:
                 st.markdown(f"### {len(outliers)} Outliers detected in '{selected_column}'")
             
-                # Boxplot visualization
                 fig = px.box(data, y=selected_column, title=f"Outlier Detection in {selected_column}")
                 st.plotly_chart(fig, use_container_width=True)
             
-                # Handling method selection
                 handling_method = st.selectbox("Choose an outlier handling method", 
                                                ["Don't modify", "Drop outliers", "Cap at bounds", "Replace with mean", "Replace with median"])
             
-                # Preview handling
                 preview_data = data.copy()
             
                 if handling_method == "Drop outliers":
@@ -661,17 +580,10 @@ else:
 
 
     with tabs[3]:
-        # Function to create visualizations
-
-
-       
-
         viz_tabs = st.tabs(["Custom", "Suggested", "Distribution", "Relationship"])
-
 
         with viz_tabs[0]:
             col1, col2, col3= st.columns(3)
-
 
             with col1:
                 chart_type = st.selectbox(
@@ -681,15 +593,13 @@ else:
 
             with col2:
                 max_rows = st.number_input("Number of Rows to Display", min_value=1, max_value=len(data), value=20, step=1)
-            
-                
+                            
             with col3:
                 filter_columns = st.multiselect("Filter Data By Column", data.columns.tolist())
                 filters = {}
                 for col in filter_columns:
                     unique_vals = data[col].dropna().unique()
                     filters[col] = st.selectbox(f"Select value for {col}", [None] + unique_vals.tolist())
-            
             
             selected_cols = {}
 
@@ -736,15 +646,12 @@ else:
             if suggested_viz:
                 st.subheader("Visualization Suggestions")
                 
-                # Let user select a suggestion
                 suggestion_titles = [s['title'] for s in suggested_viz]
                 selected_suggestion = st.selectbox("Select a suggestion", suggestion_titles)
                 
-                # Find the selected suggestion
                 selected_idx = suggestion_titles.index(selected_suggestion)
                 suggestion = suggested_viz[selected_idx]
                 
-                # Create and display the visualization
                 fig = create_visualization(data, suggestion['type'], suggestion['columns'])
                 if fig:
                     st.plotly_chart(fig, use_container_width=True)
