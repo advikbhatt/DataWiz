@@ -4,6 +4,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import base64
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 # Importing the fucntions 
 from create_visualization import create_visualization
@@ -13,6 +16,29 @@ from generate_data_profile import generate_data_profile
 from handle_missing_values import handle_missing_values
 from parse_uploaded_file import parse_uploaded_file 
 from detect_outlier import detect_outliers
+
+
+import streamlit as st
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, roc_curve, confusion_matrix
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import accuracy_score, mean_squared_error, precision_score, recall_score, f1_score, silhouette_score, davies_bouldin_score
+import plotly.figure_factory as ff
+from sklearn.mixture import GaussianMixture
+from sklearn.linear_model import LogisticRegression
+from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.cluster import KMeans
+from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+from sklearn.svm import SVC, SVR
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.linear_model import Ridge, Lasso
+from sklearn.cluster import DBSCAN, AgglomerativeClustering
+
 
 st.set_page_config(
     page_title="Data Wiz",
@@ -258,7 +284,7 @@ else:
             st.session_state.file_type = None
             st.rerun()
     
-    tabs = st.tabs(["Overview", "Data Explorer", "Error Handling", "Visualizations"])
+    tabs = st.tabs(["Overview", "Data Explorer", "Error Handling", "Visualizations","ML"])
     
     with tabs[0]:
         cleaned_data, missing_info = handle_missing_values(data)
@@ -711,6 +737,153 @@ else:
 
         
         st.markdown('</div>', unsafe_allow_html=True)
+
+    with tabs[4]:
+
+        
+
+        if 'data' not in st.session_state or st.session_state.data is None:
+            st.warning("No dataset found. Please upload a dataset on the main page.")
+            st.stop()
+
+        data = st.session_state.data.copy()
+
+        learning_type = st.tabs(["Supervised Learning", "Unsupervised Learning", "Semi-Supervised Learning", "Reinforcement Learning"])
+
+        def evaluate_regression(model, X_train, X_test, y_train, y_test):
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            return {
+                "MAE": np.mean(abs(y_test - y_pred)),
+                "MSE": mean_squared_error(y_test, y_pred),
+                "RMSE": np.sqrt(mean_squared_error(y_test, y_pred)),
+                "R² Score": model.score(X_test, y_test)
+            }
+
+        def evaluate_classification(model, X_train, X_test, y_train, y_test):
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            y_prob = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
+            metrics = {
+                "Accuracy": accuracy_score(y_test, y_pred),
+                "Precision": precision_score(y_test, y_pred, average='weighted', zero_division=0),
+                "Recall": recall_score(y_test, y_pred, average='weighted', zero_division=0),
+                "F1 Score": f1_score(y_test, y_pred, average='weighted', zero_division=0)
+            }
+            if y_prob is not None:
+                metrics["ROC-AUC"] = roc_auc_score(y_test, y_prob)
+            return metrics, confusion_matrix(y_test, y_pred)
+
+        with learning_type[0]:  # Supervised Learning
+            ml_problem = st.selectbox("Choose Task Type", ["Regression", "Classification"], key="ml_problem")
+            train_size = st.slider("Select Training Data Percentage", 50, 90, 80, step=5) / 100
+
+            if ml_problem == "Regression":
+                models = {
+                    "Linear Regression": LinearRegression(),
+                    "Ridge Regression": Ridge(),
+                    "Lasso Regression": Lasso(),
+                    "Support Vector Regression": SVR(),
+                    "Random Forest Regression": RandomForestRegressor(),
+                    "XGBoost Regression": GradientBoostingRegressor()
+                }
+            else:
+                models = {
+                    "Logistic Regression": LogisticRegression(),
+                    "K-Nearest Neighbors": KNeighborsClassifier(),
+                    "Random Forest": RandomForestClassifier(),
+                    "Support Vector Machine": SVC(probability=True),
+                    "Gradient Boosting": GradientBoostingClassifier()
+                }
+
+            selected_model_name = st.selectbox("Select Model", list(models.keys()))
+            selected_model = models[selected_model_name]
+
+            valid_target_cols = data.select_dtypes(include=[np.number]).columns if ml_problem == 'Regression' else data.select_dtypes(exclude=[np.number]).columns
+            target_col = st.selectbox("Select Target Column", valid_target_cols)
+            valid_feature_cols = data.select_dtypes(include=[np.number]).columns if ml_problem == 'Regression' else data.columns
+            feature_cols = st.multiselect("Select Feature Columns", [col for col in valid_feature_cols if col != target_col])
+
+            if feature_cols:
+                X = data[feature_cols]
+                y = data[target_col]
+                X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_size, random_state=42)
+
+                if ml_problem == "Regression":
+                    results = evaluate_regression(selected_model, X_train, X_test, y_train, y_test)
+                    st.write("### Model Performance Metrics")
+                    st.write(results)
+                else:
+                    results, conf_matrix = evaluate_classification(selected_model, X_train, X_test, y_train, y_test)
+                    st.write("### Model Performance Metrics")
+                    st.write(results)
+
+                    st.write("### Confusion Matrix")
+                    fig = ff.create_annotated_heatmap(z=conf_matrix, colorscale='Blues')
+                    st.plotly_chart(fig, use_container_width=True)
+
+        with learning_type[1]:  # Unsupervised Learning
+            unsupervised_task = st.selectbox("Select Task", ["Clustering", "Dimensionality Reduction"], key="unsupervised_task")
+
+            if unsupervised_task == "Clustering":
+                models = {
+                    "K-Means Clustering": KMeans(n_clusters=3),
+                    "Hierarchical Clustering": AgglomerativeClustering(n_clusters=3),
+                    "DBSCAN": DBSCAN(),
+                    "Gaussian Mixture Model": GaussianMixture(n_components=3)
+                }
+            else:
+                models = {
+                    "Principal Component Analysis (PCA)": PCA(n_components=2)
+                }
+
+            selected_model_name = st.selectbox("Select Model", list(models.keys()))
+            selected_model = models[selected_model_name]
+            feature_cols = st.multiselect("Select Feature Columns", data.columns)
+
+            if feature_cols:
+                X = data[feature_cols]
+                if unsupervised_task == "Clustering":
+                    cluster_labels = selected_model.fit_predict(X)
+                    metrics = {
+                        "Silhouette Score": silhouette_score(X, cluster_labels) if len(set(cluster_labels)) > 1 else "N/A",
+                        "Davies-Bouldin Index": davies_bouldin_score(X, cluster_labels) if len(set(cluster_labels)) > 1 else "N/A"
+                    }
+                    st.write("### Cluster Evaluation Metrics")
+                    st.write(metrics)
+                else:
+                    transformed_data = selected_model.fit_transform(X)
+                    st.write("### Dimensionality Reduction Output")
+                    st.write("Explained Variance Ratio:", selected_model.explained_variance_ratio_)
+
+        with learning_type[2]:  # Semi-Supervised Learning
+            models = {
+                "Label Propagation": None,
+                "Label Spreading": None
+            }
+            selected_model = st.selectbox("Select Model", list(models.keys()))
+
+        with learning_type[3]:  # Reinforcement Learning
+            reinforcement_task = st.selectbox("Select Task", ["Value-Based Methods", "Policy-Based Methods", "Actor-Critic Methods"], key="reinforcement_task")
+
+            if reinforcement_task == "Value-Based Methods":
+                models = {
+                    "Q-Learning": None,
+                    "Deep Q Networks (DQN)": None
+                }
+            elif reinforcement_task == "Policy-Based Methods":
+                models = {
+                    "REINFORCE Algorithm": None,
+                    "Proximal Policy Optimization (PPO)": None
+                }
+            elif reinforcement_task == "Actor-Critic Methods":
+                models = {
+                    "Advantage Actor-Critic (A2C)": None,
+                    "Deep Deterministic Policy Gradient (DDPG)": None
+                }
+            selected_model = st.selectbox("Select Model", list(models.keys()))
+
+
 
 st.markdown("---")
 st.markdown('<p style="text-align: center; color: gray;">Data Wiz • @2025 </p>', unsafe_allow_html=True)
