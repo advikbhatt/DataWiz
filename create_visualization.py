@@ -4,7 +4,6 @@ import plotly.graph_objects as go
 import streamlit as st
 
 def create_visualization(data, chart_type, selected_columns, color='#4a56a6', filters={}, max_rows=20):
-    # Apply filters
     filtered_data = data.copy()
     for col, val in filters.items():
         if val is not None:

@@ -16,15 +16,11 @@ def generate_column_stats(data, column_name):
             stats['mean'] = float(valid_data.mean())
             stats['median'] = float(valid_data.median())
             stats['std'] = float(valid_data.std())
-            # Calculate quartiles
             stats['q1'] = float(valid_data.quantile(0.25))
             stats['q3'] = float(valid_data.quantile(0.75))
-            # Check for zeros
             stats['zero_count'] = int((valid_data == 0).sum())
-            # Check for negative values
             stats['negative_count'] = int((valid_data < 0).sum())
-            # Skewness and kurtosis
-            if len(valid_data) > 2:  # Need at least 3 points for skewness
+            if len(valid_data) > 2: 
                 stats['skewness'] = float(valid_data.skew())
                 stats['kurtosis'] = float(valid_data.kurtosis())
         else:
@@ -69,7 +65,6 @@ def generate_column_stats(data, column_name):
             else:
                 stats['top_value'] = stats['top_count'] = stats['top_percent'] = None
             
-            # Get top 5 values
             top_values = value_counts.head(5).reset_index()
             top_values.columns = ['value', 'count']
             stats['top_values'] = [

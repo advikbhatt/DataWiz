@@ -35,7 +35,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import accuracy_score, mean_squared_error
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.svm import SVC, SVR
-from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.cluster import DBSCAN, AgglomerativeClustering
 
@@ -739,9 +739,6 @@ else:
         st.markdown('</div>', unsafe_allow_html=True)
 
     with tabs[4]:
-
-        
-
         if 'data' not in st.session_state or st.session_state.data is None:
             st.warning("No dataset found. Please upload a dataset on the main page.")
             st.stop()
@@ -882,7 +879,6 @@ else:
                     "Deep Deterministic Policy Gradient (DDPG)": None
                 }
             selected_model = st.selectbox("Select Model", list(models.keys()))
-
 
 
 st.markdown("---")
