@@ -597,7 +597,7 @@ else:
                 st.markdown("**Before/After Preview (Outlier Rows Only):**")
                 st.dataframe(before_after, use_container_width=True)
             
-                if st.button("Apply Changes"):
+                if st.button("Apply Changess"):
                     st.session_state.data = preview_data
                     st.success(f"Outliers handled for column: {selected_column}")
                     st.rerun()
