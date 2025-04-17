@@ -388,12 +388,12 @@ else:
             if col_stats['type'] == 'numeric':
                 fig = create_visualization(data, 'histogram', {'x': selected_column})
                 if fig:
-                    st.plotly_chart(fig, use_container_width=True)
-                    
+                    st.plotly_chart(fig, use_container_width=True, key=f"{selected_column}_hist")
+
             elif col_stats['type'] in ['categorical', 'boolean']:
                 fig = create_visualization(data, 'bar', {'x': selected_column})
                 if fig:
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key=f"{selected_column}_bar")
         
         st.markdown('</div>', unsafe_allow_html=True)
     
@@ -420,7 +420,7 @@ else:
                     font=dict(color='#f0f2f6'),
                     margin=dict(l=40, r=40, t=50, b=40),
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key=f"{selected_column}_missing")
                 st.subheader("Handle Missing Values")
                 col1, col2 = st.columns(2)
                 with col1:
@@ -510,7 +510,7 @@ else:
                     margin=dict(l=40, r=40, t=50, b=40),
                 )
 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="duplicate_distribution")
                 st.subheader("Handle Duplicate Values")
 
                 handling_method = st.selectbox(
@@ -558,7 +558,7 @@ else:
                 st.markdown(f"### {len(outliers)} Outliers detected in '{selected_column}'")
             
                 fig = px.box(data, y=selected_column, title=f"Outlier Detection in {selected_column}")
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key=f"{selected_column}_boxplot")
             
                 handling_method = st.selectbox("Choose an outlier handling method", 
                                                ["Don't modify", "Drop outliers", "Cap at bounds", "Replace with mean", "Replace with median"])
@@ -658,7 +658,7 @@ else:
             if selected_cols or chart_type == 'correlation':
                 fig = create_visualization(data, chart_type, selected_cols, filters=filters, max_rows=max_rows)
                 if fig:
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key=f"{chart_type}_custom")
                 else:
                     st.warning("Could not create visualization with the selected options.")
 
@@ -675,7 +675,7 @@ else:
                 
                 fig = create_visualization(data, suggestion['type'], suggestion['columns'])
                 if fig:
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key=f"suggestion_{selected_idx}")
                 else:
                     st.warning("Could not create the suggested visualization.")
             else:
@@ -727,7 +727,7 @@ else:
                 st.warning("Not enough columns available for the selected analysis.")
 
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key=f"relationship_{chart_type}")
 
 
         
@@ -766,7 +766,7 @@ else:
                 metrics["ROC-AUC"] = roc_auc_score(y_test, y_prob)
             return metrics, confusion_matrix(y_test, y_pred)
 
-        with learning_type[0]:  # Supervised Learning
+        with learning_type[0]:  
             ml_problem = st.selectbox("Choose Task Type", ["Regression", "Classification"], key="ml_problem")
             train_size = st.slider("Select Training Data Percentage", 50, 90, 80, step=5) / 100
 
@@ -812,9 +812,9 @@ else:
 
                     st.write("### Confusion Matrix")
                     fig = ff.create_annotated_heatmap(z=conf_matrix, colorscale='Blues')
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key="confusion_matrix")
 
-        with learning_type[1]:  # Unsupervised Learning
+        with learning_type[1]:  
             unsupervised_task = st.selectbox("Select Task", ["Clustering", "Dimensionality Reduction"], key="unsupervised_task")
 
             if unsupervised_task == "Clustering":
@@ -848,14 +848,14 @@ else:
                     st.write("### Dimensionality Reduction Output")
                     st.write("Explained Variance Ratio:", selected_model.explained_variance_ratio_)
 
-        with learning_type[2]:  # Semi-Supervised Learning
+        with learning_type[2]: 
             models = {
                 "Label Propagation": None,
                 "Label Spreading": None
             }
             selected_model = st.selectbox("Select Model", list(models.keys()), key="unsupervised_model")
 
-        with learning_type[3]:  # Reinforcement Learning
+        with learning_type[3]:
             reinforcement_task = st.selectbox("Select Task", ["Value-Based Methods", "Policy-Based Methods", "Actor-Critic Methods"], key="reinforcement_task")
 
             if reinforcement_task == "Value-Based Methods":
