@@ -16,11 +16,6 @@ from generate_data_profile import generate_data_profile
 from handle_missing_values import handle_missing_values
 from parse_uploaded_file import parse_uploaded_file 
 from detect_outlier import detect_outliers
-
-
-import streamlit as st
-import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, roc_curve, confusion_matrix
 from sklearn.metrics import mean_squared_error, r2_score
@@ -858,7 +853,7 @@ else:
                 "Label Propagation": None,
                 "Label Spreading": None
             }
-            selected_model = st.selectbox("Select Model", list(models.keys()))
+            selected_model = st.selectbox("Select Model", list(models.keys()), key="unsupervised_model")
 
         with learning_type[3]:  # Reinforcement Learning
             reinforcement_task = st.selectbox("Select Task", ["Value-Based Methods", "Policy-Based Methods", "Actor-Critic Methods"], key="reinforcement_task")
