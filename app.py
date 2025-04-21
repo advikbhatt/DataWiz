@@ -9,6 +9,8 @@ import seaborn as sns
 
 
 # Importing the fucntions 
+from integration_handler import database_and_upload_interface
+
 from create_visualization import create_visualization
 from suggest_visualizations import suggest_visualizations
 from generate_column_stats import generate_column_stats
@@ -248,25 +250,28 @@ with st.container():
 
 
 
-if st.session_state.data is None:        
-    with st.container():
-        st.markdown("### Upload Data File")
-        uploaded_file = st.file_uploader(
-            "Choose a file",
-            type=["csv", "json","xls","xlsx"],
-            help="Supported file formats: CSV / XLS / XLSX / JSON"
-        )
-    st.markdown('</div>', unsafe_allow_html=True)
-    if uploaded_file is not None:
-        with st.spinner("Processing file..."):
-            data, file_name, file_type = parse_uploaded_file(uploaded_file)
+# if st.session_state.data is None:        
+#     with st.container():
+#         st.markdown("### Upload Data File")
+#         uploaded_file = st.file_uploader(
+#             "Choose a file",
+#             type=["csv", "json","xls","xlsx"],
+#             help="Supported file formats: CSV / XLS / XLSX / JSON"
+#         )
+if st.session_state.data is None:
+    database_and_upload_interface()
+    # st.markdown('<div class="upload-container">', unsafe_allow_html=True)
+    # st.markdown('</div>', unsafe_allow_html=True)
+    # if uploaded_file is not None:
+    #     with st.spinner("Processing file..."):
+    #         data, file_name, file_type = parse_uploaded_file(uploaded_file)
             
-            if data is not None:
-                st.session_state.data = data
-                st.session_state.file_name = file_name
-                st.session_state.file_type = file_type
-                st.success(f"File '{file_name}' loaded successfully")
-                st.rerun()
+    #         if data is not None:
+    #             st.session_state.data = data
+    #             st.session_state.file_name = file_name
+    #             st.session_state.file_type = file_type
+    #             st.success(f"File '{file_name}' loaded successfully")
+    #             st.rerun()
 else:
     data = st.session_state.data
     st.title("Dashboard")
@@ -613,7 +618,8 @@ else:
                 )
 
             with col2:
-                max_rows = st.number_input("Number of Rows to Display", min_value=1, max_value=len(data), value=20, step=1)
+                default_value = min(20, len(data))  
+                max_rows = st.number_input("Number of Rows to Display", min_value=1, max_value=len(data), value=default_value, step=1)
                             
             with col3:
                 filter_columns = st.multiselect("Filter Data By Column", data.columns.tolist())
