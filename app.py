@@ -7,10 +7,8 @@ import base64
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 # Importing the fucntions 
 from integration_handler import database_and_upload_interface
-
 from create_visualization import create_visualization
 from suggest_visualizations import suggest_visualizations
 from generate_column_stats import generate_column_stats
@@ -19,8 +17,8 @@ from handle_missing_values import handle_missing_values
 from parse_uploaded_file import parse_uploaded_file 
 from detect_outlier import detect_outliers
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, roc_curve, confusion_matrix
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
+from sklearn.metrics import mean_squared_error
 from sklearn.metrics import accuracy_score, mean_squared_error, precision_score, recall_score, f1_score, silhouette_score, davies_bouldin_score
 import plotly.figure_factory as ff
 from sklearn.mixture import GaussianMixture
@@ -248,16 +246,6 @@ with st.container():
             </div>
         """.format(base64.b64encode(open("logo.png", "rb").read()).decode()), unsafe_allow_html=True)
 
-
-
-# if st.session_state.data is None:        
-#     with st.container():
-#         st.markdown("### Upload Data File")
-#         uploaded_file = st.file_uploader(
-#             "Choose a file",
-#             type=["csv", "json","xls","xlsx"],
-#             help="Supported file formats: CSV / XLS / XLSX / JSON"
-#         )
 if st.session_state.data is None:
     database_and_upload_interface()
     # st.markdown('<div class="upload-container">', unsafe_allow_html=True)
