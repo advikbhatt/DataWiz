@@ -1,10 +1,10 @@
-from langchain.llms import Ollama
+from langchain_community.llms import Ollama  
 from langchain.agents import initialize_agent
 from langchain.agents.agent_types import AgentType
 from langchain.tools import Tool
 import pandas as pd
 
-def get_ollama_agent_response(question, df: pd.DataFrame):
+def ollama_agent(question, df: pd.DataFrame):
     tools = [
         Tool(
             name="Get Data Summary",
