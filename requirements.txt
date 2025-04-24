@@ -7,3 +7,4 @@ matplotlib
 seaborn
 scikit-learn
 ollama
+langchain
