@@ -6,3 +6,4 @@ openpyxl
 matplotlib
 seaborn
 scikit-learn
+ollama
