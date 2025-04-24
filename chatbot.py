@@ -1,4 +1,4 @@
-from langchain_community.llms import Ollama  
+from langchain.llms import Ollama
 from langchain.agents import initialize_agent
 from langchain.agents.agent_types import AgentType
 from langchain.tools import Tool
