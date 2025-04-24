@@ -881,7 +881,7 @@ else:
             question = st.text_input("Ask a question about your data:")
             if question:
                 with st.spinner("Thinking..."):
-                    response = get_ollama_agent_response(question, st.session_state.data)
+                    response = ollama_agent(question, st.session_state.data)
                     st.success("Response:")
                     st.write(response)
 
