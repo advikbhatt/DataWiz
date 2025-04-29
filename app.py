@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Importing the fucntions 
-from chatbot import ollama_agent
 from integration_handler import database_and_upload_interface
 from create_visualization import create_visualization
 from suggest_visualizations import suggest_visualizations
@@ -273,7 +272,7 @@ else:
             st.session_state.file_type = None
             st.rerun()
     
-    tabs = st.tabs(["Overview", "Data Explorer", "Error Handling", "Visualizations","ML","AI"])
+    tabs = st.tabs(["Overview", "Data Explorer", "Error Handling", "Visualizations","ML"])
     
     with tabs[0]:
         cleaned_data, missing_info = handle_missing_values(data)
@@ -870,20 +869,6 @@ else:
                 }
             selected_model = st.selectbox("Select Model", list(models.keys()))
 
-
-    with tabs[5]:
-        st.header("🤖 AI Chatbot (Ollama)")
-        st.write("Ask questions about your uploaded dataset!")
-    
-        if st.session_state.data is None:
-            st.warning("Upload a dataset to use the AI chatbot.")
-        else:
-            question = st.text_input("Ask a question about your data:")
-            if question:
-                with st.spinner("Thinking..."):
-                    response = ollama_agent(question, st.session_state.data)
-                    st.success("Response:")
-                    st.write(response)
 
 st.markdown("---")
 st.markdown('<p style="text-align: center; color: gray;">Data Wiz • @2025 </p>', unsafe_allow_html=True)
