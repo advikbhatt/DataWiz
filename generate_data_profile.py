@@ -1,7 +1,6 @@
 
 def generate_data_profile(data):
     profile = {}
-
     profile['row_count'] = len(data)
     profile['column_count'] = len(data.columns)
     profile['memory_usage'] = f"{data.memory_usage(deep=True).sum() / (1024 * 1024):.2f} MB"

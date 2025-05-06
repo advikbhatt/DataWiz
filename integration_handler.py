@@ -7,7 +7,6 @@ def database_and_upload_interface():
     st.markdown("## 📂 Data Source")
     db_tabs = st.tabs(["Upload File", "Connect MongoDB", "Connect SQL Database"])
 
-    # Upload Tab
     with db_tabs[0]:
         uploaded_files = st.file_uploader(
             "Upload one or more data files",
@@ -25,7 +24,6 @@ def database_and_upload_interface():
                     st.success(f"File '{file_name}' loaded successfully")
                     st.rerun()
 
-    # MongoDB Tab
     with db_tabs[1]:
         st.subheader("🔗 Connect to MongoDB")
         with st.form("mongo_form"):
@@ -48,7 +46,6 @@ def database_and_upload_interface():
             except Exception as e:
                 st.error(f"❌ MongoDB Connection Error: {e}")
 
-    # SQL Tab
     with db_tabs[2]:
         st.subheader("🔗 Connect to SQL Database")
         with st.form("sql_form"):

@@ -7,19 +7,22 @@ import base64
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Importing the fucntions 
+# Importing the fucntions from the files
 from integration_handler import database_and_upload_interface
 from create_visualization import create_visualization
 from suggest_visualizations import suggest_visualizations
 from generate_column_stats import generate_column_stats
 from generate_data_profile import generate_data_profile
 from handle_missing_values import handle_missing_values
-from parse_uploaded_file import parse_uploaded_file 
+
+# Importing all the required fucntions 
 from detect_outlier import detect_outliers
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import accuracy_score, mean_squared_error, precision_score, recall_score, f1_score, silhouette_score, davies_bouldin_score
+from sklearn.metrics import accuracy_score, mean_squared_error
+
 import plotly.figure_factory as ff
 from sklearn.mixture import GaussianMixture
 from sklearn.linear_model import LogisticRegression
@@ -27,7 +30,6 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.cluster import KMeans
-from sklearn.metrics import accuracy_score, mean_squared_error
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.svm import SVC, SVR
 from sklearn.neighbors import KNeighborsClassifier
@@ -248,18 +250,6 @@ with st.container():
 
 if st.session_state.data is None:
     database_and_upload_interface()
-    # st.markdown('<div class="upload-container">', unsafe_allow_html=True)
-    # st.markdown('</div>', unsafe_allow_html=True)
-    # if uploaded_file is not None:
-    #     with st.spinner("Processing file..."):
-    #         data, file_name, file_type = parse_uploaded_file(uploaded_file)
-            
-    #         if data is not None:
-    #             st.session_state.data = data
-    #             st.session_state.file_name = file_name
-    #             st.session_state.file_type = file_type
-    #             st.success(f"File '{file_name}' loaded successfully")
-    #             st.rerun()
 else:
     data = st.session_state.data
     st.title("Dashboard")
@@ -272,7 +262,7 @@ else:
             st.session_state.file_type = None
             st.rerun()
     
-    tabs = st.tabs(["Overview", "Data Explorer", "Error Handling", "Visualizations","ML"])
+    tabs = st.tabs(["Overview", "Data Explorer", "Error Handling", "Visualizations","Machine Learning"])
     
     with tabs[0]:
         cleaned_data, missing_info = handle_missing_values(data)
@@ -585,13 +575,12 @@ else:
                 st.markdown("**Before/After Preview (Outlier Rows Only):**")
                 st.dataframe(before_after, use_container_width=True)
             
-                if st.button("Apply Changess"):
+                if st.button("Make Changes"):
                     st.session_state.data = preview_data
                     st.success(f"Outliers handled for column: {selected_column}")
                     st.rerun()
             else:
                 st.info("No outliers detected in this column.")
-
 
     with tabs[3]:
         viz_tabs = st.tabs(["Custom", "Suggested", "Distribution", "Relationship"])

@@ -76,5 +76,3 @@ def generate_column_stats(data, column_name):
             stats['top_values'] = []
     
     return stats
-
-

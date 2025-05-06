@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 def suggest_visualizations(data):
     suggestions = []
     
@@ -61,5 +60,4 @@ def suggest_visualizations(data):
             'columns': {},
             'title': 'Correlation Matrix'
         })
-    
     return suggestions
